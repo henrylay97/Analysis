@@ -13,11 +13,11 @@ const SpillCut kCC([](const caf::SRSpillProxy* sp) {
   });
 
 const SpillCut kCCNuMu([](const caf::SRSpillProxy* sp) {
-    return kCC(sp) && sp->mc.nu[0].pdg == 14;
+    return kCC(sp) && std::abs(sp->mc.nu[0].pdg) == 14;
   });
 
 const SpillCut kCCNuE([](const caf::SRSpillProxy* sp) {
-    return kCC(sp) && sp->mc.nu[0].pdg == 12;
+    return kCC(sp) && std::abs(sp->mc.nu[0].pdg) == 12;
   });
     
 const SpillVar kNPiPlus([](const caf::SRSpillProxy* sp) -> unsigned {
@@ -118,6 +118,10 @@ const SpillCut kNCMultiPion([](const caf::SRSpillProxy* sp) {
     return (kNPiPlus(sp) + kNPiMinus(sp) + kNPiZero(sp)) > 1;
   });
 
+const SpillCut kOther = !kPileUp && !kNC && !kCCNuMu && !kCCNuE;
+const SpillCut kOtherNC = kNC && !kNCInvisible && !kNCProton && !kNCPiPlusMinus && !kNCPiZero && !kNCMultiPion;
+const SpillCut kOtherCC = kCC && !kCCZeroPi && !kCCPiPlusMinus && !kCCPiZero && !kCCMultiPion;
+
 struct TrueDef {
   std::string name = "";
   SpillCut cut = kNoSpillCut;
@@ -129,7 +133,7 @@ std::vector<TrueDef> categories = {
   {"NC", kNC, kOrange+2},
   {"CC #nu_{#mu},", kCCNuMu, kMagenta+2},
   {"CC #nu_{e},", kCCNuE, kCyan+2},
-  {"Other", !kPileUp && !kNC && !kCCNuMu && !kCCNuE, kBlack}
+  {"Other", kOther, kBlack}
 };
 
 std::vector<TrueDef> nc_categories = {
@@ -138,7 +142,7 @@ std::vector<TrueDef> nc_categories = {
   {"NC 1#pi^{#pm},", kNCPiPlusMinus, kMagenta+2},
   {"NC 1#pi^{0},", kNCPiZero, kViolet+2},
   {"NC Multi Pion,", kNCMultiPion, kCyan+2},
-  {"Other", !kNCInvisible && !kNCProton && !kNCPiPlusMinus && !kNCPiZero && !kNCMultiPion, kBlack}
+  {"Other", kOtherNC, kBlack}
 };
 
 std::vector<TrueDef> cc_categories = {
@@ -146,5 +150,5 @@ std::vector<TrueDef> cc_categories = {
   {"CC 1#pi^{#pm},", kCCPiPlusMinus, kMagenta+2},
   {"CC 1#pi^{0},", kCCPiZero, kViolet+2},
   {"CC Multi Pion,", kCCMultiPion, kCyan+2},
-  {"Other", !kCCZeroPi && !kCCPiPlusMinus && !kCCPiZero && !kCCMultiPion, kBlack}
+  {"Other", kOtherCC, kBlack}
 };
