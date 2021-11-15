@@ -124,29 +124,30 @@ struct TrueDef {
   std::string name = "";
   SpillCut cut = kNoSpillCut;
   int colour = kBlack;
+  std::string label = "";
 };
 
 std::vector<TrueDef> categories = {
-  {"PileUp", kPileUp, kTeal+8},
-  {"NC", kNC, kOrange+2},
-  {"CC #nu_{#mu}", kCCNuMu, kMagenta+2},
-  {"CC #nu_{e}", kCCNuE, kCyan+2},
-  {"Other", kOther, kBlack}
+  {"PileUp", kPileUp, kTeal+8, "PileUp"},
+  {"NC", kNC, kOrange+2, "NC"},
+  {"CC #nu_{#mu}", kCCNuMu, kMagenta+2, "CCNuMu"},
+  {"CC #nu_{e}", kCCNuE, kCyan+2, "CCNuE"},
+  {"Other", kOther, kBlack, "Other"}
 };
 
 std::vector<TrueDef> nc_categories = {
-  {"NC Invisible", kNCInvisible, kGray+1},
-  {"NC Proton", kNCProton, kOrange+3},
-  {"NC 1#pi^{#pm}", kNCPiPlusMinus, kMagenta+2},
-  {"NC 1#pi^{0}", kNCPiZero, kViolet+2},
-  {"NC Multi Pion", kNCMultiPion, kCyan+2},
-  {"Other", kOtherNC, kBlack}
+  {"NC Invisible", kNCInvisible, kGray+1, "NCInv"},
+  {"NC Proton", kNCProton, kOrange+3, "NCProt"},
+  {"NC 1#pi^{#pm}", kNCPiPlusMinus, kMagenta+2, "NCPiPlusMinus"},
+  {"NC 1#pi^{0}", kNCPiZero, kViolet+2, "NCPiZero"},
+  {"NC Multi Pion", kNCMultiPion, kCyan+2, "NCMultiPion"},
+  {"Other", kOtherNC, kBlack, "Other"}
 };
 
 std::vector<TrueDef> cc_categories = {
-  {"CC 0#pi", kCCZeroPi, kRed-3},
-  {"CC 1#pi^{#pm}", kCCPiPlusMinus, kMagenta+2},
-  {"CC 1#pi^{0}", kCCPiZero, kViolet+2},
-  {"CC Multi Pion", kCCMultiPion, kCyan+2},
-  {"Other", kOtherCC, kBlack}
+  {"CC 0#pi", kCCZeroPi, kRed-3, "CCZeroPi"},
+  {"CC 1#pi^{#pm}", kCCPiPlusMinus, kMagenta+2, "CCPiPlusMinus"},
+  {"CC 1#pi^{0}", kCCPiZero, kViolet+2, "CCPiZero"},
+  {"CC Multi Pion", kCCMultiPion, kCyan+2, "CCMultiPion"},
+  {"Other", kOtherCC, kBlack, "Other"}
 };

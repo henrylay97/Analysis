@@ -5,6 +5,9 @@ const SpillCut kHasAtLeastOneTrk([](const caf::SRSpillProxy *sp) {
   });
 
 const SpillCut kLongestTrkLength([](const caf::SRSpillProxy *sp) {
+    if(!kHasAtLeastOneTrk(sp))
+      return false;
+
     auto const &slc = sp->slc[kBestSliceID(sp)];
     auto const &trk = slc.reco.trk[kLongestTrkID(sp)];
 
@@ -27,8 +30,25 @@ const SpillCut kOtherTrkLength([](const caf::SRSpillProxy *sp) {
   });
 
 std::vector<TrueDef> ccnumu_sig_back_categories = {
-  {"Signal (CC #nu_{#mu})", kCCNuMu, kMagenta+2},
-  {"PileUp", kPileUp, kTeal+8},
-  {"NC", kNC, kOrange+2},
-  {"CC #nu_{e}", kCCNuE, kCyan+2}
+  {"Signal (CC #nu_{#mu})", kCCNuMu, kMagenta+2, "Signal"},
+  {"PileUp", kPileUp, kTeal+8, "PileUp"},
+  {"NC", kNC, kOrange+2, "NC"},
+  {"CC #nu_{e}", kCCNuE, kCyan+2, "CCNuE"}
+};
+
+struct CutInfo {
+  std::string name = "";
+  SpillCut cut = kNoSpillCut;
+  std::string label = "";
+};
+
+const SpillCut kSelected = kHasNuSlc && kRecoFV && kHasAtLeastOneTrk && kLongestTrkLength;
+
+std::vector<CutInfo> ccnumu_cuts = {
+  {"No Selection", kNoSpillCut, "NoCuts"},
+  {"Has #nu Slice", kHasNuSlc, "HasNuSlc"},
+  {"Reco FV", kRecoFV, "RecoFV"},
+  {"Has >=1 Tracks", kHasAtLeastOneTrk, "HasAtLeastOneTrk"},
+  {"Longest Track Length > 50cm", kLongestTrkLength, "LongestTrkLength"},
+  {"Selection", kSelected, "Selection"}
 };
