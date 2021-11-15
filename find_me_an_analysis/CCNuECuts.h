@@ -17,6 +17,16 @@ const SpillCut kLargestShwdEdx([](const caf::SRSpillProxy *sp) {
     return shw.bestplane_dEdx < 3;
   });
 
+const SpillCut kLargestShwCnvGap([](const caf::SRSpillProxy *sp) {
+    if(!kHasAtLeastOneShw(sp))
+      return false;
+
+    auto const &slc = sp->slc[kBestSliceID(sp)];
+    auto const &shw = slc.reco.shw[kLargestShwID(sp)];
+
+    return shw.conversion_gap < 3;
+  });
+
 const SpillCut kLongestTrkLength([](const caf::SRSpillProxy *sp) {
     if(sp->nslc == 0)
       return false;
@@ -44,7 +54,7 @@ struct CutInfo {
   std::string label = "";
 };
 
-const SpillCut kSelected = kHasNuSlc && kRecoFV && kHasAtLeastOneShw && kLargestShwdEdx && kLongestTrkLength;
+const SpillCut kSelected = kHasNuSlc && kRecoFV && kHasAtLeastOneShw && kLargestShwdEdx && kLongestTrkLength && kLargestShwCnvGap;
 
 std::vector<CutInfo> ccnue_cuts = {
   {"No Selection", kNoSpillCut, "NoCuts"},
@@ -53,5 +63,6 @@ std::vector<CutInfo> ccnue_cuts = {
   {"Has >=1 Showers", kHasAtLeastOneShw, "HasAtLeastOneShw"},
   {"Largest Shower dEdx <3 MeV/cm", kLargestShwdEdx, "LargestShwdEdx"},
   {"Longest Track Length < 50cm", kLongestTrkLength, "LongestTrkLength"},
+  {"Largest Shower Conversion Gap < 3cm", kLargestShwCnvGap, "LargestShwCnvGap"},
   {"Selection", kSelected, "Selection"}
 };
