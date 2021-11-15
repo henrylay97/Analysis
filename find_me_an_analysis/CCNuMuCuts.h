@@ -1,4 +1,7 @@
 const SpillCut kHasAtLeastOneTrk([](const caf::SRSpillProxy *sp) {
+    if(sp->nslc == 0)
+      return false;
+
     auto const &slc = sp->slc[kBestSliceID(sp)];
     
     return slc.reco.ntrk > 0;  
@@ -15,6 +18,9 @@ const SpillCut kLongestTrkLength([](const caf::SRSpillProxy *sp) {
   });
 
 const SpillCut kOtherTrkLength([](const caf::SRSpillProxy *sp) {
+    if(sp->nslc == 0)
+      return false;
+
     auto const &slc = sp->slc[kBestSliceID(sp)];
 
     for(unsigned i = 0; i < slc.reco.ntrk; ++i) {

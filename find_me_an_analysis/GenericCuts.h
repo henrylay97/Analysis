@@ -11,7 +11,7 @@ const SpillCut kHasNuSlc([](const caf::SRSpillProxy *sp) {
 
 const SpillVar kBestSliceID([](const caf::SRSpillProxy *sp) -> unsigned {
   unsigned index(999999);
-  float nu_score(-5.f);
+  float nu_score(-std::numeric_limits<float>::max());
   for(int i = 0; i < sp->nslc; ++i){
     auto const &slc = sp->slc[i];
     if(slc.nu_score > nu_score){
@@ -23,6 +23,9 @@ const SpillVar kBestSliceID([](const caf::SRSpillProxy *sp) -> unsigned {
   });
 
 const SpillCut kRecoFV([](const caf::SRSpillProxy* sp) {
+    if(sp->nslc == 0)
+      return false;
+
     return PtInVolAbsX(sp->slc[kBestSliceID(sp)].vertex, fvnd);
   });
 
@@ -30,7 +33,7 @@ const SpillVar kLongestTrkID([](const caf::SRSpillProxy *sp) -> unsigned {
     auto const& slc = sp->slc[kBestSliceID(sp)];
 
     unsigned index(999999);
-    float trk_length(-5.f);
+    float trk_length(-std::numeric_limits<float>::max());
 
     for(unsigned i = 0; i < slc.reco.ntrk; ++i) {
       auto const& trk = slc.reco.trk[i];
@@ -47,7 +50,7 @@ const SpillVar kLargestShwID([](const caf::SRSpillProxy *sp) -> unsigned {
     auto const& slc = sp->slc[kBestSliceID(sp)];
 
     unsigned index(999999);
-    float shw_en(-5.f);
+    float shw_en(-std::numeric_limits<float>::max());
 
     for(unsigned i = 0; i < slc.reco.nshw; ++i) {
       auto const& shw = slc.reco.shw[i];
