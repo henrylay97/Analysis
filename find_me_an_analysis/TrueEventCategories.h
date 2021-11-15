@@ -129,24 +129,24 @@ struct TrueDef {
 std::vector<TrueDef> categories = {
   {"PileUp", kPileUp, kTeal+8},
   {"NC", kNC, kOrange+2},
-  {"CC #nu_{#mu},", kCCNuMu, kMagenta+2},
-  {"CC #nu_{e},", kCCNuE, kCyan+2},
+  {"CC #nu_{#mu}", kCCNuMu, kMagenta+2},
+  {"CC #nu_{e}", kCCNuE, kCyan+2},
   {"Other", kOther, kBlack}
 };
 
 std::vector<TrueDef> nc_categories = {
   {"NC Invisible", kNCInvisible, kGray+1},
   {"NC Proton", kNCProton, kOrange+3},
-  {"NC 1#pi^{#pm},", kNCPiPlusMinus, kMagenta+2},
-  {"NC 1#pi^{0},", kNCPiZero, kViolet+2},
-  {"NC Multi Pion,", kNCMultiPion, kCyan+2},
+  {"NC 1#pi^{#pm}", kNCPiPlusMinus, kMagenta+2},
+  {"NC 1#pi^{0}", kNCPiZero, kViolet+2},
+  {"NC Multi Pion", kNCMultiPion, kCyan+2},
   {"Other", kOtherNC, kBlack}
 };
 
 std::vector<TrueDef> cc_categories = {
   {"CC 0#pi", kCCZeroPi, kRed-3},
-  {"CC 1#pi^{#pm},", kCCPiPlusMinus, kMagenta+2},
-  {"CC 1#pi^{0},", kCCPiZero, kViolet+2},
-  {"CC Multi Pion,", kCCMultiPion, kCyan+2},
+  {"CC 1#pi^{#pm}", kCCPiPlusMinus, kMagenta+2},
+  {"CC 1#pi^{0}", kCCPiZero, kViolet+2},
+  {"CC Multi Pion", kCCMultiPion, kCyan+2},
   {"Other", kOtherCC, kBlack}
 };

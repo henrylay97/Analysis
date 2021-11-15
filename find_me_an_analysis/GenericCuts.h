@@ -32,14 +32,14 @@ const SpillVar kLongestTrkID([](const caf::SRSpillProxy *sp) -> unsigned {
     unsigned index(999999);
     float trk_length(-5.f);
 
-    for(unsigned i = 0; i < slc->reco.ntrk; ++i) {
-      auto const& trk = slc->reco.trk[i];
+    for(unsigned i = 0; i < slc.reco.ntrk; ++i) {
+      auto const& trk = slc.reco.trk[i];
       if(trk.len > trk_length) {
 	trk_length = trk.len;
 	index = i;
       }
-    });
-
+    }
+    
     return index;
   });
 
@@ -49,11 +49,13 @@ const SpillVar kLargestShwID([](const caf::SRSpillProxy *sp) -> unsigned {
     unsigned index(999999);
     float shw_en(-5.f);
 
-    for(unsigned i = 0; i < slc->reco.nshw; ++i) {
-      auto const& shw = slc->reco.shw[i];
+    for(unsigned i = 0; i < slc.reco.nshw; ++i) {
+      auto const& shw = slc.reco.shw[i];
       if(shw.bestplane_energy > shw_en) {
 	shw_en = shw.bestplane_energy;
 	index = i;
       }
     }
+    
+    return index;
   });
