@@ -7,24 +7,13 @@ using namespace ana;
 #include "sbnana/CAFAna/StandardRecord/Proxy/SRProxy.h"
 #include "sbnana/SBNAna/Cuts/VolumeDefinitions.h"
 #include "TrueEventCategories.h"
+#include "TrueNuVars.h"
+#include "GenericCuts.h"
 
 #include "TCanvas.h"
 #include "TH1.h"
 #include "TLegend.h"
 #include "THStack.h"
-
-const SpillVar kTrueNuEn([](const caf::SRSpillProxy* sp) -> float {
-    float en(-5.f);
-    for(auto const& nu : sp->mc.nu) {
-      if(nu.E > en)
-	en = nu.E;
-    }
-    return en;
-  });
-
-const SpillCut kFV([](const caf::SRSpillProxy* sp) {
-    return PtInVolAbsX(sp->mc.nu[0].position, fvnd);
-  });
 
 //void plot_event_categories(const std::string inputName = "defname: official_MC2021Bv1_prodoverlay_corsika_cosmics_proton_genie_nu_spill_gsimple-configh-v1_tpc_reco2_flat_caf_sbnd")
 void plot_event_categories(const std::string inputName = "defname: test100_official_test100_MC2021Bv1_prodoverlay_corsika_cosmics_proton_genie_nu_spill_gsimple-configh-v1_tpc_reco2_caf_sbnd")
@@ -46,18 +35,18 @@ void plot_event_categories(const std::string inputName = "defname: test100_offic
 
   for(int i = 0; i < kNTypes; ++i)
     {
-      spectrums.emplace_back(new Spectrum("True Interaction Energy (GeV)", binsNuEn, loader, kTrueNuEn, kFV && categories[i].cut));
+      spectrums.emplace_back(new Spectrum("True Interaction Energy (GeV)", binsNuEn, loader, kTrueNuEn, kTrueFV && categories[i].cut));
     }
 
   for(int i = 0; i < kNTypesNC; ++i)
     {
-      spectrums_nc.emplace_back(new Spectrum("True Interaction Energy (GeV)", binsNuEn, loader, kTrueNuEn, kFV && nc_categories[i].cut));
+      spectrums_nc.emplace_back(new Spectrum("True Interaction Energy (GeV)", binsNuEn, loader, kTrueNuEn, kTrueFV && nc_categories[i].cut));
     }
 
   for(int i = 0; i < kNTypesCC; ++i)
     {
-      spectrums_cc_numu.emplace_back(new Spectrum("True Interaction Energy (GeV)", binsNuEn, loader, kTrueNuEn, kFV && kCCNuMu && cc_categories[i].cut));
-      spectrums_cc_nue.emplace_back(new Spectrum("True Interaction Energy (GeV)", binsNuEn, loader, kTrueNuEn, kFV && kCCNuE && cc_categories[i].cut));
+      spectrums_cc_numu.emplace_back(new Spectrum("True Interaction Energy (GeV)", binsNuEn, loader, kTrueNuEn, kTrueFV && kCCNuMu && cc_categories[i].cut));
+      spectrums_cc_nue.emplace_back(new Spectrum("True Interaction Energy (GeV)", binsNuEn, loader, kTrueNuEn, kTrueFV && kCCNuE && cc_categories[i].cut));
     }
 
   loader.Go();

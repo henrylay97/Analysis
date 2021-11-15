@@ -1,5 +1,3 @@
-#include "sbnana/CAFAna/StandardRecord/Proxy/SRProxy.h"
-
 const SpillCut kPileUp([](const caf::SRSpillProxy* sp) {
     return sp->mc.nnu > 1;
   });
