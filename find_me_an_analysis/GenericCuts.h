@@ -38,7 +38,7 @@ const SpillVar kLongestTrkID([](const caf::SRSpillProxy *sp) -> unsigned {
 	trk_length = trk.len;
 	index = i;
       }
-    }
+    });
 
     return index;
   });
