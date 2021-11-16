@@ -7,22 +7,60 @@
 #include "THStack.h"
 #include "TFile.h"
 
+std::vector<CutInfo> make_cumulative_cuts(const std::vector<CutInfo> &cuts)
+{
+  std::vector<CutInfo> cumulative_cuts;
+  SpillCut cumulativeCut = kNoSpillCut;
+
+  for(unsigned i = 0; i < cuts.size(); ++i)
+    {
+      cumulativeCut = cumulativeCut && cuts[i].cut;
+      CutInfo entry = {"Cumulative (" + cuts[i].name + ")", cumulativeCut, "Cumulative" + cuts[i].label};
+      cumulative_cuts.push_back(entry);
+    }
+
+  cumulative_cuts.back().name = "Full Selection";
+  cumulative_cuts.back().label = "Selection";  
+
+  return cumulative_cuts;
+}
+
+std::vector<CutInfo> make_n_minus_one_cuts(const std::vector<CutInfo> &cuts)
+{
+  std::vector<CutInfo> n_minus_one_cuts;
+
+  for(unsigned i = 0; i < cuts.size(); ++i)
+    {
+      SpillCut thisCut = kNoSpillCut;
+
+      for(unsigned j = 0; j < cuts.size(); ++j)
+	{
+	  if(j != i)
+	    thisCut = thisCut && cuts[j].cut;
+	}
+
+      CutInfo entry = {"N - 1 (" + cuts[i].name + ")", thisCut, "Nm1" + cuts[i].label};
+      n_minus_one_cuts.push_back(entry);
+    }
+  return n_minus_one_cuts;
+}
+
 void fill_and_save_spectra(const std::string inputName, const std::vector<CutInfo> &cuts, const std::vector<TrueDef> &categories)
 {
   SpectrumLoader loader(inputName);
 
   const Binning binsNuEn = Binning::Simple(25, 0, 5);
 
-  const int kNCategories = categories.size();
-  const int kNCuts = cuts.size();
+  const unsigned kNCategories = categories.size();
+  const unsigned kNCuts = cuts.size();
 
   std::vector<std::vector<Spectrum*> > spectrums;
 
-  for(int i = 0; i < kNCuts; ++i)
+  for(unsigned i = 0; i < kNCuts; ++i)
     {
       spectrums.emplace_back(std::vector<Spectrum*>());
       
-      for(int j = 0; j < kNCategories; ++j)
+      for(unsigned j = 0; j < kNCategories; ++j)
         {
           spectrums[i].emplace_back(new Spectrum("True Interaction Energy (GeV)", binsNuEn, loader, kTrueNuEn, cuts[i].cut && kTrueFV && categories[j].cut));
         }
@@ -31,9 +69,9 @@ void fill_and_save_spectra(const std::string inputName, const std::vector<CutInf
 
   TFile fout("temp_spectra_save_file.root", "RECREATE");
 
-  for(int i = 0; i < kNCuts; ++i) 
+  for(unsigned i = 0; i < kNCuts; ++i) 
     {
-      for(int j = 0; j < kNCategories; ++j)
+      for(unsigned j = 0; j < kNCategories; ++j)
 	{
 	  const std::string dirName = cuts[i].label + "_" + categories[j].label;
 	  spectrums[i][j]->SaveTo(fout.mkdir(dirName.c_str()));

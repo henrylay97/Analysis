@@ -56,5 +56,4 @@ std::vector<CutInfo> ccnumu_cuts = {
   {"Reco FV", kRecoFV, "RecoFV"},
   {"Has >=1 Tracks", kHasAtLeastOneTrk, "HasAtLeastOneTrk"},
   {"Longest Track Length > 50cm", kLongestTrkLength, "LongestTrkLength"},
-  {"Selection", kSelected, "Selection"}
 };

@@ -64,5 +64,4 @@ std::vector<CutInfo> ccnue_cuts = {
   {"Largest Shower dEdx <3 MeV/cm", kLargestShwdEdx, "LargestShwdEdx"},
   {"Longest Track Length < 50cm", kLongestTrkLength, "LongestTrkLength"},
   {"Largest Shower Conversion Gap < 3cm", kLargestShwCnvGap, "LargestShwCnvGap"},
-  {"Selection", kSelected, "Selection"}
 };

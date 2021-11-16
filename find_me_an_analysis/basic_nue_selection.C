@@ -19,8 +19,16 @@ void basic_nue_selection()
 
   const double gPOT = 1e20;
 
-  fill_and_save_spectra(inputName, ccnue_cuts, ccnue_sig_back_categories);
+  std::vector cumulative_cuts = make_cumulative_cuts(ccnue_cuts);
+  std::vector n_minus_one_cuts = make_n_minus_one_cuts(ccnue_cuts);
+
+  std::vector all_cuts = ccnue_cuts;
+  all_cuts.insert(all_cuts.end(), cumulative_cuts.begin(), cumulative_cuts.end());
+  all_cuts.insert(all_cuts.end(), n_minus_one_cuts.begin(), n_minus_one_cuts.end());
+
+  fill_and_save_spectra(inputName, all_cuts, ccnue_sig_back_categories);
 
   plot_selection(ccnue_cuts, ccnue_sig_back_categories, gPOT);
-
+  plot_selection(cumulative_cuts, ccnue_sig_back_categories, gPOT);
+  plot_selection(n_minus_one_cuts, ccnue_sig_back_categories, gPOT);
 }
