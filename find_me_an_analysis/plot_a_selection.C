@@ -32,11 +32,11 @@ std::vector<CutInfo> make_n_minus_one_cuts(const std::vector<CutInfo> &cuts)
 {
   std::vector<CutInfo> n_minus_one_cuts;
 
-  for(unsigned i = 0; i < cuts.size(); ++i)
+  for(unsigned i = 1; i < cuts.size(); ++i)
     {
       SpillCut thisCut = kNoSpillCut;
 
-      for(unsigned j = 0; j < cuts.size(); ++j)
+      for(unsigned j = 1; j < cuts.size(); ++j)
 	{
 	  if(j != i)
 	    thisCut = thisCut && cuts[j].cut;
@@ -91,8 +91,8 @@ void plot_selection(const std::vector<CutInfo> &cuts, const std::vector<TrueDef>
   const unsigned kNCuts = cuts.size();
   const unsigned kNCategories = categories.size();
 
-  Spectrum* totalSignalSpec = LoadFromFile<Spectrum>(inFile, cuts[0].label + "_Signal").release();
-  Spectrum* totalBackgroundSpec = LoadFromFile<Spectrum>(inFile, cuts[0].label + "_Background").release();
+  Spectrum* totalSignalSpec = LoadFromFile<Spectrum>(inFile, "NoCuts_Signal").release();
+  Spectrum* totalBackgroundSpec = LoadFromFile<Spectrum>(inFile, "NoCuts_Background").release();
   const double totalSignal = totalSignalSpec->Integral(gPOT);
   const double totalBackground = totalBackgroundSpec->Integral(gPOT);
 
