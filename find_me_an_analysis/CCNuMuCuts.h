@@ -46,12 +46,6 @@ std::vector<TrueDef> ccnumu_sig_back_categories = {
   {"Background", !kCCNuMu, kBlack, "Background"}
 };
 
-struct CutInfo {
-  std::string name = "";
-  SpillCut cut = kNoSpillCut;
-  std::string label = "";
-};
-
 std::vector<CutInfo> ccnumu_cuts = {
   {"No Selection", kNoSpillCut, "NoCuts"},
   {"Has #nu Slice", kHasNuSlc, "HasNuSlc"},

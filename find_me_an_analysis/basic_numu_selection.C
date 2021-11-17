@@ -5,6 +5,7 @@
 
 using namespace ana;
 
+#include "Structs.h"
 #include "TrueEventCategories.h"
 #include "TrueNuVars.h"
 #include "GenericCuts.h"

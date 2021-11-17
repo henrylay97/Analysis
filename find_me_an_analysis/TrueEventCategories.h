@@ -120,13 +120,6 @@ const SpillCut kOther = !kPileUp && !kNC && !kCCNuMu && !kCCNuE;
 const SpillCut kOtherNC = kNC && !kNCInvisible && !kNCProton && !kNCPiPlusMinus && !kNCPiZero && !kNCMultiPion;
 const SpillCut kOtherCC = kCC && !kCCZeroPi && !kCCPiPlusMinus && !kCCPiZero && !kCCMultiPion;
 
-struct TrueDef {
-  std::string name = "";
-  SpillCut cut = kNoSpillCut;
-  int colour = kBlack;
-  std::string label = "";
-};
-
 std::vector<TrueDef> categories = {
   {"PileUp", kPileUp, kTeal+8, "PileUp"},
   {"NC", kNC, kOrange+2, "NC"},
