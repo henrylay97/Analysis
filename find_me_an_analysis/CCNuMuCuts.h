@@ -35,11 +35,15 @@ const SpillCut kOtherTrkLength([](const caf::SRSpillProxy *sp) {
     return true;
   });
 
+const SpillCut kOtherBack = !kCCNuMu && !kPileUp && !kNC && !kCCNuE;
+
 std::vector<TrueDef> ccnumu_sig_back_categories = {
   {"Signal (CC #nu_{#mu})", kCCNuMu, kMagenta+2, "Signal"},
   {"PileUp", kPileUp, kTeal+8, "PileUp"},
   {"NC", kNC, kOrange+2, "NC"},
-  {"CC #nu_{e}", kCCNuE, kCyan+2, "CCNuE"}
+  {"CC #nu_{e}", kCCNuE, kCyan+2, "CCNuE"},
+  {"Other", kOtherBack, kBlack, "Other"},
+  {"Background", !kCCNuMu, kBlack, "Background"}
 };
 
 struct CutInfo {
@@ -47,8 +51,6 @@ struct CutInfo {
   SpillCut cut = kNoSpillCut;
   std::string label = "";
 };
-
-const SpillCut kSelected = kHasNuSlc && kRecoFV && kHasAtLeastOneTrk && kLongestTrkLength;
 
 std::vector<CutInfo> ccnumu_cuts = {
   {"No Selection", kNoSpillCut, "NoCuts"},
