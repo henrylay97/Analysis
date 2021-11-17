@@ -30,6 +30,13 @@ const SpillCut kLongestTrkLength([](const caf::SRSpillProxy *sp) {
     return trk.len < 50;
   });
 
+const SpillCut kHasNoTrk([](const caf::SRSpillProxy *sp) {
+    if(sp->nslc == 0)
+      return false;
+
+    auto const &slc = sp->slc[kBestSliceID(sp)];
+    return slc.reco.ntrk == 0;
+  });
 
 const SpillCut kOtherBack = !kNCPiZero && !kCCNuMu && !kCCNuE && !kNC && !kPileUp;
 
@@ -49,5 +56,5 @@ std::vector<CutInfo> ncpizero_cuts = {
   {"Reco FV", kRecoFV, "RecoFV"},
   {"Has >=1 Showers", kHasAtLeastOneShw, "HasAtLeastOneShw"},
   {"Largest Shower dEdx >2 MeV/cm", kLargestShwdEdx, "LargestShwdEdx"},
-  {"Longest Track Length < 50cm", kLongestTrkLength, "LongestTrkLength"},
+  {"Has No Tracks", kHasNoTrk, "HasNoTrk"},
 };
