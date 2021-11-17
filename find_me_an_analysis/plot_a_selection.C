@@ -7,6 +7,7 @@
 #include "THStack.h"
 #include "TFile.h"
 #include "TGraph.h"
+#include "TPaveText.h"
 
 std::vector<CutInfo> make_cumulative_cuts(const std::vector<CutInfo> &cuts)
 {
@@ -90,8 +91,28 @@ void plot_selection(const std::vector<CutInfo> &cuts, const std::vector<TrueDef>
   const unsigned kNCuts = cuts.size();
   const unsigned kNCategories = categories.size();
 
+  Spectrum* totalSignalSpec = LoadFromFile<Spectrum>(inFile, cuts[0].label + "_Signal").release();
+  Spectrum* totalBackgroundSpec = LoadFromFile<Spectrum>(inFile, cuts[0].label + "_Background").release();
+  const double totalSignal = totalSignalSpec->Integral(gPOT);
+  const double totalBackground = totalBackgroundSpec->Integral(gPOT);
+
   for(unsigned i = 0; i < kNCuts; ++i)
     {
+      Spectrum* signalSpec = LoadFromFile<Spectrum>(inFile, cuts[i].label + "_Signal").release();
+      Spectrum* backgroundSpec = LoadFromFile<Spectrum>(inFile, cuts[i].label + "_Background").release();
+      const double signal = signalSpec->Integral(gPOT);
+      const double background = backgroundSpec->Integral(gPOT);
+
+      const double efficiency = 100. * signal / totalSignal;
+      const double purity = 100. * signal / (signal + background);
+      const double backrej = 100. * (1 - (background / totalBackground));
+
+      TPaveText *pvt = new TPaveText(.6,.35,.8,.45, "NB NDC");
+      pvt->SetTextAlign(12);
+      pvt->AddText(Form("Efficiency: %.2f%%", efficiency));
+      pvt->AddText(Form("Purity: %.2f%%", purity));
+      pvt->AddText(Form("Backgroud Rej: %.2f%%", backrej));
+
       canvases.emplace_back(new TCanvas(Form("c%s", cuts[i].label.c_str()), Form("c%s", cuts[i].label.c_str())));
       TLegend *legend = new TLegend(.6,.55,.8,.8);
       THStack *hstack = new THStack(Form("hs%s", cuts[i].label.c_str()), Form("%s;True E_{#nu};Events (%g POT)", cuts[i].name.c_str(), gPOT));
@@ -114,6 +135,7 @@ void plot_selection(const std::vector<CutInfo> &cuts, const std::vector<TrueDef>
 
       hstack->Draw("hist");
       legend->Draw();
+      pvt->Draw();
     }
 }
 
