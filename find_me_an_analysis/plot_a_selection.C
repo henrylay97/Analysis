@@ -6,6 +6,7 @@
 #include "TLegend.h"
 #include "THStack.h"
 #include "TFile.h"
+#include "TGraph.h"
 
 std::vector<CutInfo> make_cumulative_cuts(const std::vector<CutInfo> &cuts)
 {
@@ -19,6 +20,7 @@ std::vector<CutInfo> make_cumulative_cuts(const std::vector<CutInfo> &cuts)
       cumulative_cuts.push_back(entry);
     }
 
+  cumulative_cuts.push_back(cumulative_cuts.back());
   cumulative_cuts.back().name = "Full Selection";
   cumulative_cuts.back().label = "Selection";  
 
@@ -98,6 +100,9 @@ void plot_selection(const std::vector<CutInfo> &cuts, const std::vector<TrueDef>
   
       for(unsigned j = 0; j < kNCategories; ++j)
 	{
+	  if(categories[j].label == "Background")
+	    continue;
+
 	  const std::string dirName = cuts[i].label + "_" + categories[j].label;
 	  Spectrum* spec = LoadFromFile<Spectrum>(inFile, dirName).release();
 
@@ -110,4 +115,72 @@ void plot_selection(const std::vector<CutInfo> &cuts, const std::vector<TrueDef>
       hstack->Draw("hist");
       legend->Draw();
     }
+}
+
+void plot_cumulative_selection_metrics(const std::vector<CutInfo> &cuts, const double gPOT = 6.6e20)
+{
+  const std::string inFile = "temp_spectra_save_file.root";
+
+  const unsigned kNCuts = cuts.size();
+
+  TH1F *efficiency = new TH1F("efficiency", ";;Fraction(%)", kNCuts-1, 0, kNCuts-1);
+  TH1F *purity = new TH1F("purity", "", kNCuts-1, 0, kNCuts-1);
+  TH1F *backrej = new TH1F("backrej", "", kNCuts-1, 0, kNCuts-1);
+
+  Spectrum* totalSignalSpec = LoadFromFile<Spectrum>(inFile, cuts[0].label + "_Signal").release();
+  Spectrum* totalBackgroundSpec = LoadFromFile<Spectrum>(inFile, cuts[0].label + "_Background").release();
+  
+  const double totalSignal = totalSignalSpec->Integral(gPOT);
+  const double totalBackground = totalBackgroundSpec->Integral(gPOT);
+  
+  for(unsigned i = 0; i < kNCuts - 1; ++i)
+    {
+      Spectrum* signalSpec = LoadFromFile<Spectrum>(inFile, cuts[i].label + "_Signal").release();
+      Spectrum* backgroundSpec = LoadFromFile<Spectrum>(inFile, cuts[i].label + "_Background").release();
+
+      const double signal = signalSpec->Integral(gPOT);
+      const double background = backgroundSpec->Integral(gPOT);
+
+      efficiency->SetBinContent(i+1, signal / totalSignal);
+      purity->SetBinContent(i+1, signal / (signal + background));
+      backrej->SetBinContent(i+1, 1 - (background / totalBackground));
+      std::string label = cuts[i].label.c_str();
+      label.erase(0,10);
+      efficiency->GetXaxis()->SetBinLabel(i+1, label.c_str());
+    }
+
+  TCanvas *cMetrics = new TCanvas("cMetrics","cMetrics");
+  cMetrics->cd();
+  cMetrics->SetBottomMargin(.3);
+  cMetrics->SetTopMargin(.05);
+
+  efficiency->GetXaxis()->LabelsOption("v");
+  efficiency->GetXaxis()->SetLabelFont(62);
+  efficiency->SetMaximum(1.1);
+  efficiency->SetMinimum(0);
+
+  efficiency->SetLineColor(kBlue);
+  efficiency->SetMarkerColor(kBlue);
+  efficiency->SetMarkerSize(2);
+  efficiency->SetMarkerStyle(68);
+  purity->SetLineColor(kMagenta);
+  purity->SetMarkerColor(kMagenta);
+  purity->SetMarkerSize(2);
+  purity->SetMarkerStyle(68);
+  backrej->SetLineColor(kRed);
+  backrej->SetMarkerColor(kRed);
+  backrej->SetMarkerSize(2);
+  backrej->SetMarkerStyle(68);
+
+  efficiency->Draw("p");
+  purity->Draw("psame");
+  backrej->Draw("psame");
+
+  TLegend *l = new TLegend(.3,.2);
+  l->SetFillColorAlpha(0,0);
+  l->AddEntry(efficiency, "Efficiency", "p");
+  l->AddEntry(purity, "Purity", "p");
+  l->AddEntry(backrej, "Background Rej", "p");
+  l->SetLineWidth(2);
+  l->Draw();
 }

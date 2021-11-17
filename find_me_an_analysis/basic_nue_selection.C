@@ -31,4 +31,6 @@ void basic_nue_selection()
   plot_selection(ccnue_cuts, ccnue_sig_back_categories, gPOT);
   plot_selection(cumulative_cuts, ccnue_sig_back_categories, gPOT);
   plot_selection(n_minus_one_cuts, ccnue_sig_back_categories, gPOT);
+
+  plot_cumulative_selection_metrics(cumulative_cuts, gPOT);
 }
