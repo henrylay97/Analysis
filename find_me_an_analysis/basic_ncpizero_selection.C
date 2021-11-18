@@ -38,5 +38,5 @@ void basic_ncpizero_selection()
   plot_selection(n_minus_one_cuts, categories, gPOT);
   plot_selection(final_cuts, categories, gPOT, true);
 
-  plot_cumulative_selection_metrics(cumulative_cuts, gPOT);
+  plot_cumulative_selection_metrics(cumulative_cuts, gPOT, true);
 }

@@ -149,7 +149,7 @@ void plot_selection(const std::vector<CutInfo> &cuts, const std::vector<TrueDef>
     }
 }
 
-void plot_cumulative_selection_metrics(const std::vector<CutInfo> &cuts, const double gPOT = 6.6e20)
+void plot_cumulative_selection_metrics(const std::vector<CutInfo> &cuts, const double gPOT = 6.6e20, const bool save = false)
 {
   const std::string inFile = "temp_spectra_save_file.root";
 
@@ -173,9 +173,9 @@ void plot_cumulative_selection_metrics(const std::vector<CutInfo> &cuts, const d
       const double signal = signalSpec->Integral(gPOT);
       const double background = backgroundSpec->Integral(gPOT);
 
-      efficiency->SetBinContent(i+1, signal / totalSignal);
-      purity->SetBinContent(i+1, signal / (signal + background));
-      backrej->SetBinContent(i+1, 1 - (background / totalBackground));
+      efficiency->SetBinContent(i+1, 100. * signal / totalSignal);
+      purity->SetBinContent(i+1, 100. * signal / (signal + background));
+      backrej->SetBinContent(i+1, 100. * (1 - (background / totalBackground)));
       std::string label = cuts[i].label.c_str();
       label.erase(0,10);
       efficiency->GetXaxis()->SetBinLabel(i+1, label.c_str());
@@ -183,23 +183,20 @@ void plot_cumulative_selection_metrics(const std::vector<CutInfo> &cuts, const d
 
   TCanvas *cMetrics = new TCanvas("cMetrics","cMetrics");
   cMetrics->cd();
-  cMetrics->SetBottomMargin(.3);
+  cMetrics->SetBottomMargin(.35);
   cMetrics->SetTopMargin(.05);
 
   efficiency->GetXaxis()->LabelsOption("v");
   efficiency->GetXaxis()->SetLabelFont(62);
-  efficiency->SetMaximum(1.1);
+  efficiency->SetMaximum(110);
   efficiency->SetMinimum(0);
 
-  efficiency->SetLineColor(kBlue);
   efficiency->SetMarkerColor(kBlue);
   efficiency->SetMarkerSize(2);
   efficiency->SetMarkerStyle(68);
-  purity->SetLineColor(kMagenta);
-  purity->SetMarkerColor(kMagenta);
+  purity->SetMarkerColor(kMagenta+2);
   purity->SetMarkerSize(2);
   purity->SetMarkerStyle(68);
-  backrej->SetLineColor(kRed);
   backrej->SetMarkerColor(kRed);
   backrej->SetMarkerSize(2);
   backrej->SetMarkerStyle(68);
@@ -208,11 +205,18 @@ void plot_cumulative_selection_metrics(const std::vector<CutInfo> &cuts, const d
   purity->Draw("psame");
   backrej->Draw("psame");
 
-  TLegend *l = new TLegend(.3,.2);
-  l->SetFillColorAlpha(0,0);
+  TLegend *l = new TLegend(.1,.03,.9,.08);
+  l->SetNColumns(3);
   l->AddEntry(efficiency, "Efficiency", "p");
   l->AddEntry(purity, "Purity", "p");
-  l->AddEntry(backrej, "Background Rej", "p");
+  l->AddEntry(backrej, "Background Rejection", "p");
   l->SetLineWidth(2);
   l->Draw();
+
+  if(save)
+    {
+      cMetrics->Print(("./plots/" + selection.label + "/selection_metrics.pdf").c_str());
+      cMetrics->Print(("./plots/" + selection.label + "/selection_metrics.png").c_str());
+    }
+
 }
