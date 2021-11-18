@@ -61,3 +61,10 @@ std::vector<CutInfo> ccnue_cuts = {
   {"Longest Track Length < 50cm", kLongestTrkLength, "LongestTrkLength"},
   {"Largest Shower Conversion Gap < 3cm", kLargestShwCnvGap, "LargestShwCnvGap"},
 };
+
+Selection selection = {
+  "CC #nu_{e} Selection",
+  ccnue_sig_back_categories,
+  ccnue_cuts,
+  "ccnue"
+};

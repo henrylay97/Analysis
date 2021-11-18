@@ -53,3 +53,10 @@ std::vector<CutInfo> ccnumu_cuts = {
   {"Has >=1 Tracks", kHasAtLeastOneTrk, "HasAtLeastOneTrk"},
   {"Longest Track Length > 50cm", kLongestTrkLength, "LongestTrkLength"},
 };
+
+Selection selection = {
+  "CC #nu_{#mu} Selection",
+  ccnumu_sig_back_categories,
+  ccnumu_cuts,
+  "ccnumu"
+};

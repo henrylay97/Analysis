@@ -20,18 +20,23 @@ void basic_numu_selection()
 
   const double gPOT = 1e20;
 
-  std::vector cumulative_cuts = make_cumulative_cuts(ccnumu_cuts);
-  std::vector n_minus_one_cuts = make_n_minus_one_cuts(ccnumu_cuts);
+  std::vector categories = selection.categories;
+  std::vector cuts = selection.cuts;
 
-  std::vector all_cuts = ccnumu_cuts;
+  std::vector cumulative_cuts = make_cumulative_cuts(cuts);
+  std::vector n_minus_one_cuts = make_n_minus_one_cuts(cuts);
+  std::vector final_cuts = {cuts.front(), cumulative_cuts.back()};
+
+  std::vector all_cuts = cuts;
   all_cuts.insert(all_cuts.end(), cumulative_cuts.begin(), cumulative_cuts.end());
   all_cuts.insert(all_cuts.end(), n_minus_one_cuts.begin(), n_minus_one_cuts.end());
 
-  fill_and_save_spectra(inputName, all_cuts, ccnumu_sig_back_categories);
+  fill_and_save_spectra(inputName, all_cuts, categories);
 
-  plot_selection(ccnumu_cuts, ccnumu_sig_back_categories, gPOT);
-  plot_selection(cumulative_cuts, ccnumu_sig_back_categories, gPOT);
-  plot_selection(n_minus_one_cuts, ccnumu_sig_back_categories, gPOT);
+  plot_selection(cuts, categories, gPOT);
+  plot_selection(cumulative_cuts, categories, gPOT);
+  plot_selection(n_minus_one_cuts, categories, gPOT);
+  plot_selection(final_cuts, categories, gPOT, true);
 
-  plot_cumulative_selection_metrics(cumulative_cuts, gPOT);
+  plot_cumulative_selection_metrics(cumulative_cuts, gPOT, true);
 }
