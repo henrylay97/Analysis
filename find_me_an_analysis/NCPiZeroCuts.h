@@ -58,3 +58,10 @@ std::vector<CutInfo> ncpizero_cuts = {
   {"Largest Shower dEdx >2 MeV/cm", kLargestShwdEdx, "LargestShwdEdx"},
   {"Has No Tracks", kHasNoTrk, "HasNoTrk"},
 };
+
+Selection selection = {
+  "NC #pi^{0} Selection",
+  ncpizero_sig_back_categories,
+  ncpizero_cuts,
+  "ncpizero"
+};

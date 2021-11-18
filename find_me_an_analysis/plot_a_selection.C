@@ -9,6 +9,9 @@
 #include "TGraph.h"
 #include "TPaveText.h"
 
+#include <boost/algorithm/string.hpp>
+#include <string>
+
 std::vector<CutInfo> make_cumulative_cuts(const std::vector<CutInfo> &cuts)
 {
   std::vector<CutInfo> cumulative_cuts;
@@ -82,7 +85,7 @@ void fill_and_save_spectra(const std::string inputName, const std::vector<CutInf
     }
 }
 
-void plot_selection(const std::vector<CutInfo> &cuts, const std::vector<TrueDef> &categories, const double gPOT = 6.6e20)
+void plot_selection(const std::vector<CutInfo> &cuts, const std::vector<TrueDef> &categories, const double gPOT = 6.6e20, const bool save = false)
 {
   const std::string inFile = "temp_spectra_save_file.root";
 
@@ -136,6 +139,13 @@ void plot_selection(const std::vector<CutInfo> &cuts, const std::vector<TrueDef>
       hstack->Draw("hist");
       legend->Draw();
       pvt->Draw();
+
+      if(save)
+	{
+	  std::string lowercaselabel = boost::to_lower_copy<std::string>(cuts[i].label);
+	  canvases[i]->Print(("./plots/" + selection.label + "/" + lowercaselabel + ".pdf").c_str());
+	  canvases[i]->Print(("./plots/" + selection.label + "/" + lowercaselabel + ".png").c_str());
+	}
     }
 }
 

@@ -10,3 +10,10 @@ struct CutInfo {
   SpillCut cut = kNoSpillCut;
   std::string label = "";
 };
+
+struct Selection {
+  std::string name = "";
+  std::vector<TrueDef> categories = {};
+  std::vector<CutInfo> cuts = {};
+  std::string label = "";
+};
