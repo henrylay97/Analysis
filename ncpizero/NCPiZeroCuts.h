@@ -124,13 +124,21 @@ std::vector<CutInfo> ncpizero_cuts = {
   {"2 shower invariant mass is > 40MeV/c^{2}", kInvMassCut, "InvMass"},
 };
 
+std::vector<CutInfo> ncpizero_half_razz_dazz_cuts = {
+  {"No Selection", kNoSpillCut, "NoCuts"},
+  {"Has #nu Slice", kHasNuSlc, "HasNuSlc"},
+  {"Reco FV", kRecoFV, "RecoFV"},
+  {"Has >=2 Showers", kHasAtLeastTwoShw, "HasAtLeastTwoShw"},
+  {"No Dazzle Muons", kNoDazzleMuons, "NoDazzleMuons"},
+  {"No Dazzle Pions", kNoDazzlePions, "NoDazzlePions"},
+};
+
 std::vector<CutInfo> ncpizero_razz_dazz_cuts = {
   {"No Selection", kNoSpillCut, "NoCuts"},
   {"Has #nu Slice", kHasNuSlc, "HasNuSlc"},
   {"Reco FV", kRecoFV, "RecoFV"},
   {"Two Razzle Photons", kTwoRazzlePhotons, "TwoRazzlePhotons"},
   {"No Razzle Electrons", kNoRazzleElectrons, "NoRazzleElectrons"},
-  //  {"Has >=2 Showers", kHasAtLeastTwoShw, "HasAtLeastTwoShw"},
   {"No Dazzle Muons", kNoDazzleMuons, "NoDazzleMuons"},
   {"No Dazzle Pions", kNoDazzlePions, "NoDazzlePions"},
 };
@@ -138,6 +146,6 @@ std::vector<CutInfo> ncpizero_razz_dazz_cuts = {
 Selection selection = {
   "NC #pi^{0} Selection",
   ncpizero_detailed_categories,
-  ncpizero_razz_dazz_cuts,
+  ncpizero_cuts,
   "ncpizero"
 };
