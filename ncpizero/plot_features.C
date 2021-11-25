@@ -11,6 +11,7 @@ using namespace ana;
 #include "Structs.h"
 #include "GenericCuts.h"
 #include "TrueEventCategories.h"
+#include "NCPiZeroRecoVars.h"
 
 #include "TCanvas.h"
 #include "TH1.h"
@@ -49,7 +50,7 @@ void fill_and_save_spectra(const std::string inputName, const std::vector<Plot> 
     }
 }
 
-void plotter(const std::vector<Plot> &plots, const std::vector<TrueDef> &categories, const double gPOT = 6.6e20, const bool save = false)
+void plotter(const std::vector<Plot> &plots, const std::vector<TrueDef> &categories, const double gPOT = 6.6e20, const bool save = false, std::string extraDir = "")
 {
   const std::string inFile = "temp_spectra_save_file.root";
 
@@ -84,8 +85,11 @@ void plotter(const std::vector<Plot> &plots, const std::vector<TrueDef> &categor
 
       if(save)
 	{
-	  canvases[i]->Print(("./plots/" + plots[i].label + ".pdf").c_str());
-	  canvases[i]->Print(("./plots/" + plots[i].label + ".png").c_str());
+	  std::string dir = "./plots/";
+	  if(extraDir != "") dir += (extraDir + "/");
+
+	  canvases[i]->Print((dir + plots[i].label + ".pdf").c_str());
+	  canvases[i]->Print((dir + plots[i].label + ".png").c_str());
 	}
     }
 }
@@ -96,6 +100,6 @@ void plot_features(const std::string inputName = "defname: test100_official_test
   const double gPOT = 1e20;
 
   fill_and_save_spectra(inputName, event_plots, ncpizero_categories);
-  plotter(event_plots, ncpizero_categories, gPOT);
+  plotter(event_plots, ncpizero_categories, gPOT, true, "standard");
 }
 

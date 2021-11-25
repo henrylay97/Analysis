@@ -1,3 +1,5 @@
+#include "TVector3.h"
+
 const SpillVar kNTracks([](const caf::SRSpillProxy* sp) -> unsigned {
     if(!kHasNuSlc(sp))
       return 0;
@@ -180,15 +182,108 @@ const SpillVar kSubLeadingShowerCosmicDist([](const caf::SRSpillProxy* sp) -> do
     else return sp->slc[kBestSliceID(sp)].reco.shw[lead_index].cosmicDist;
   });
 
+const SpillVar kInvariantMass([](const caf::SRSpillProxy* sp) -> double {
+    if(!kHasNuSlc(sp))
+      return 0;
+
+    const unsigned lead_index = kLeadingShwID(sp);
+    if(lead_index == 999999)
+      return -999999;
+    const unsigned sublead_index = kSubLeadingShwID(sp);
+    if(sublead_index == 999999)
+      return -999999;
+    
+    auto const& lead = sp->slc[kBestSliceID(sp)].reco.shw[lead_index];
+    auto const& sublead = sp->slc[kBestSliceID(sp)].reco.shw[sublead_index];
+
+    TVector3 leadDir(lead.dir.x, lead.dir.y, lead.dir.z);
+    TVector3 subleadDir(sublead.dir.x, sublead.dir.y, sublead.dir.z);
+
+    const double cosine = leadDir.Dot(subleadDir) / (leadDir.Mag() * subleadDir.Mag());
+
+    return sqrt(2 * (1e+6) * lead.bestplane_energy * sublead.bestplane_energy * (1. - cosine));
+  });
+
+const SpillVar kRazzleNElectrons([](const caf::SRSpillProxy *sp) -> unsigned {
+    if(sp->nslc == 0)
+      return false;
+
+    unsigned nelectrons(0);
+
+    for(auto const& shw : sp->slc[kBestSliceID(sp)].reco.shw)
+      {
+        if(shw.razzle.pdg == 11) ++nelectrons;
+      }
+
+    return nelectrons;
+  });
+
+const SpillVar kRazzleNPhotons([](const caf::SRSpillProxy *sp) -> unsigned {
+    if(sp->nslc == 0)
+      return false;
+
+    unsigned nphotons(0);
+
+    for(auto const& shw : sp->slc[kBestSliceID(sp)].reco.shw)
+      {
+        if(shw.razzle.pdg == 22) ++nphotons;
+      }
+
+    return nphotons;
+  });
+
+const SpillVar kDazzleNProtons([](const caf::SRSpillProxy *sp) -> unsigned {
+    if(sp->nslc == 0)
+      return false;
+
+    unsigned nprotons(0);
+
+    for(auto const& trk : sp->slc[kBestSliceID(sp)].reco.trk)
+      {
+        if(trk.dazzle.pdg == 2212) ++nprotons;
+      }
+
+    return nprotons;
+  });
+
+const SpillVar kDazzleNPions([](const caf::SRSpillProxy *sp) -> unsigned {
+    if(sp->nslc == 0)
+      return false;
+
+    unsigned npions(0);
+
+    for(auto const& trk : sp->slc[kBestSliceID(sp)].reco.trk)
+      {
+        if(trk.dazzle.pdg == 211) ++npions;
+      }
+
+    return npions;
+  });
+
+const SpillVar kDazzleNMuons([](const caf::SRSpillProxy *sp) -> unsigned {
+    if(sp->nslc == 0)
+      return false;
+
+    unsigned nmuons(0);
+
+    for(auto const& trk : sp->slc[kBestSliceID(sp)].reco.trk)
+      {
+        if(trk.dazzle.pdg == 13) ++nmuons;
+      }
+
+    return nmuons;
+  });
+
 const Binning binsCount = Binning::Simple(10,0,10);
 const Binning binsTrkLength = Binning::Simple(25,0,500);
 const Binning binsShwEnergy = Binning::Simple(25,0,1);
 const Binning binsShwdEdx = Binning::Simple(30,0,6);
 const Binning binsShwConvGap = Binning::Simple(25,0,50);
-const Binning binsShwDensity = Binning::Simple(25,0,100);
-const Binning binsShwLength = Binning::Simple(25,0,100);
+const Binning binsShwDensity = Binning::Simple(25,0,40);
+const Binning binsShwLength = Binning::Simple(30,0,150);
 const Binning binsShwOpeningAngle = Binning::Simple(30,0,180);
-const Binning binsShwCosmicDist = Binning::Simple(25,0,50);
+const Binning binsShwCosmicDist = Binning::Simple(25,0,200);
+const Binning binsInvMass = Binning::Simple(30,0,300);
 
 std::vector<Plot> event_plots = {
   {"N Protons", kNProton, binsCount, ";Number of protons", "nprotons"},
@@ -209,4 +304,5 @@ std::vector<Plot> event_plots = {
   {"Sub-Leading Shower Length", kSubLeadingShowerLength, binsShwLength, ";Sub-leading shower length (cm);", "subleadingshwlength"},
   {"Sub-Leading Shower Opening Angle", kSubLeadingShowerOpeningAngle, binsShwOpeningAngle, ";Sub-leading shower openingangle (#circ);", "subleadingshwopeningangle"},
   {"Sub-Leading Shower Cosmic Distance", kSubLeadingShowerCosmicDist, binsShwCosmicDist, ";Sub-leading shower cosmic distance (cm);", "subleadingshwcosmicdist"},
+  {"Diphoton Invariant Mass", kInvariantMass, binsInvMass, ";W (MeV/c^{2});", "invariantmass"},
 };
